@@ -20,13 +20,15 @@ import org.springframework.web.bind.annotation.PostMapping;
 @Controller
 public class ConcertController {
     // TODO: create hashmap of concerts for storing data
-    private static int nextId = 1;
     private HashMap<Integer, Concert> concerts = new HashMap<Integer, Concert>();
+    private int nextId = 1; // To generate unique IDs for concerts
 
-    //TODO: add initbinder to convert date
+    // Initialize a date format for date input
+    private SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
+
+    // TODO: add initbinder to convert date
     @InitBinder
-    public final void initBinderUsuariosFormValidator(final WebDataBinder binder, final Locale locale) {
-        final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", locale);
+    public void initBinder(WebDataBinder binder) {
         binder.registerCustomEditor(Date.class, new CustomDateEditor(dateFormat, true));
     }
 
@@ -41,7 +43,7 @@ public class ConcertController {
     @GetMapping("/add-concert")
     public String addAConcertForm(Model model) {
         // TODO: pass blank concert to a form
-        model.addAttribute("concert", new Concert());
+        model.addAttribute("concerts", new Concert());
         // TODO: return a template for concert form
         return "add-concert-form";
     }
@@ -51,7 +53,6 @@ public class ConcertController {
         // TODO: add concert to list of concerts
         concert.setId(nextId);
         concerts.put(nextId, concert);
-        
         // TODO: increment nextId
         nextId++;
         // TODO: redirect to list concerts
@@ -66,13 +67,11 @@ public class ConcertController {
         return "redirect:/concerts";
     }
 
-    
     @GetMapping("/delete-concert")
     public String removeAllConcerts() {
-        //TODO: clear all employees and reset id
+        // TODO: clear all employees and reset id
         concerts.clear();
         nextId = 1;
-        
         // TODO: redirect to list concerts
         return "redirect:/concerts";
     }
